@@ -1,4 +1,4 @@
-<span style="font-size: 50px;">**Simple ATM Interface**.</span>
+<span style="font-size: 200px;">**Simple ATM Interface**.</span>
 
 
 This project is a basic ATM interface implemented in Python. It allows users to perform common banking tasks such as checking balances, withdrawing cash, depositing cash, and changing their PIN.
