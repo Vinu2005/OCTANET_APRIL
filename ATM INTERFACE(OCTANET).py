@@ -7,13 +7,16 @@
 import getpass
 import string
 import os
+from datetime import datetime
 
-# creatinga lists of users, their PINs and bank statements
+# creating lists of users, their PINs, bank statements, and transaction history
 users = ['user1', 'user2', 'user3']
 pins = ['1234', '2222', '3333']
 amounts = [1000, 2000, 3000]
+transaction_history = [[] for _ in range(len(users))]  # List to store transaction history for each user
 count = 0
-# while loop checks existance of the enterd username
+
+# while loop checks existence of the entered username
 print("****************************************************************************")
 print("*                                                                          *")
 print("*                         Welcome to ATM MACHINE                           *")
@@ -23,12 +26,7 @@ while True:
     user = input('\nENTER USER NAME: ')
     user = user.lower()
     if user in users:
-        if user == users[0]:
-            n = 0
-        elif user == users[1]:
-            n = 1
-        else:
-            n = 2
+        n = users.index(user)  # Getting the index of the user
         break
     else:
         print('----------------')
@@ -45,41 +43,16 @@ while count < 3:
     print('******************')
     print('------------------')
     if pin.isdigit():
-        if user == 'user1':
-            if pin == pins[0]:
-                break
-            else:
-                count += 1
-                print('-----------')
-                print('***********')
-                print('INVALID PIN')
-                print('***********')
-                print('-----------')
-                print()
-
-        if user == 'user2':
-            if pin == pins[1]:
-                break
-            else:
-                count += 1
-                print('-----------')
-                print('***********')
-                print('INVALID PIN')
-                print('***********')
-                print('-----------')
-                print()
-
-        if user == 'user3':
-            if pin == pins[2]:
-                break
-            else:
-                count += 1
-                print('-----------')
-                print('***********')
-                print('INVALID PIN')
-                print('***********')
-                print('-----------')
-                print()
+        if pin == pins[n]:
+            break
+        else:
+            count += 1
+            print('-----------')
+            print('***********')
+            print('INVALID PIN')
+            print('***********')
+            print('-----------')
+            print()
     else:
         print('------------------------')
         print('************************')
@@ -88,11 +61,11 @@ while count < 3:
         print('------------------------')
         count += 1
 
-# in case of a valid pin- continuing, or exiting
+# in case of a valid pin - continuing, or exiting
 if count == 3:
     print('-----------------------------------')
     print('***********************************')
-    print('3 UNSUCCESFUL PIN ATTEMPTS, EXITING')
+    print('3 UNSUCCESSFUL PIN ATTEMPTS, EXITING')
     print('!!!!!YOUR CARD HAS BEEN LOCKED!!!!!')
     print('***********************************')
     print('-----------------------------------')
@@ -100,7 +73,7 @@ if count == 3:
 
 print('-------------------------')
 print('*************************')
-print('LOGIN SUCCESFUL, CONTINUE')
+print('LOGIN SUCCESSFUL, CONTINUE')
 print('*************************')
 print('-------------------------')
 print()
@@ -115,10 +88,10 @@ while True:
     print('-------------------------------')
     print('*******************************')
     response = input(
-        'SELECT FROM FOLLOWING OPTIONS: \nStatement__(S) \nWithdraw___(W) \nDeposit__(D)  \nChange PIN_(P)  \nQuit_______(Q) \nType The Letter Of Your Choices: ').lower()
+        'SELECT FROM FOLLOWING OPTIONS: \nStatement__(S) \nWithdraw___(W) \nDeposit__(D)  \nChange PIN_(P)  \nTransaction History(T)\nQuit_______(Q) \nType The Letter Of Your Choices: ').lower()
     print('*******************************')
     print('-------------------------------')
-    valid_responses = ['s', 'w', 'd', 'p', 'q']
+    valid_responses = ['s', 'w', 'd', 'p', 't', 'q']
     response = response.lower()
     if response == 's':
         print('---------------------------------------------')
@@ -146,7 +119,9 @@ while True:
             print('*****************************')
             print('-----------------------------')
         else:
-            amounts[n] = amounts[n] - cash_out
+            amounts[n] -= cash_out
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            transaction_history[n].append(('Withdrawal', cash_out, timestamp))  # Adding withdrawal transaction to history
             print('-----------------------------------')
             print('***********************************')
             print('YOUR NEW BALANCE IS: ', amounts[n], 'RUPEES')
@@ -168,7 +143,9 @@ while True:
             print('****************************************************')
             print('----------------------------------------------------')
         else:
-            amounts[n] = amounts[n] + cash_in
+            amounts[n] += cash_in
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            transaction_history[n].append(('Deposit', cash_in, timestamp))  # Adding deposit transaction to history
             print('----------------------------------------')
             print('****************************************')
             print('YOUR NEW BALANCE IS: ', amounts[n], 'RUPEES')
@@ -186,18 +163,26 @@ while True:
         print('*******************')
         print('-------------------')
         if new_ppin != new_pin:
-                print('------------')
-                print('************')
-                print('PIN MISMATCH')
-                print('************')
-                print('------------')
+            print('------------')
+            print('************')
+            print('PIN MISMATCH')
+            print('************')
+            print('------------')
         else:
-                pins[n] = new_pin
-                print('************')
-                print('------------')
-                print('NEW PIN SAVED')
-                print('************')
-                print('------------')
+            pins[n] = new_pin
+            print('************')
+            print('------------')
+            print('NEW PIN SAVED')
+            print('************')
+            print('------------')
+    elif response == 't':  # Option to view transaction history
+        print('----------------------------------------')
+        print('********* TRANSACTION HISTORY *********')
+        print('----------------------------------------')
+        for idx, transaction in enumerate(transaction_history[n], start=1):
+            trans_type, amount, timestamp = transaction
+            print(f'{idx}. {trans_type}: {amount} RUPEES at {timestamp}')
+        print('----------------------------------------')
     elif response == 'q':
         exit()
     else:
@@ -206,6 +191,7 @@ while True:
         print('RESPONSE NOT VALID')
         print('******************')
         print('------------------')
+
 
 
 # In[ ]:
