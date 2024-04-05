@@ -21,4 +21,6 @@ Account Actions:
 
 **Change PIN:** Users can update their PIN for added security.
 
+**Transaction History** Users can view their transaction history
+
 **Account Locking:** After three unsuccessful PIN attempts, the user's account is locked for security.
